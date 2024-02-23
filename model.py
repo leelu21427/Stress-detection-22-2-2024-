@@ -30,6 +30,6 @@ random_forest_classifier.predict(X_test)
 #pickle file of our model
 #pickle.dump(random_forest_classifier,open("model.pkl","wb"))
 #joblib.dump(random_forest_classifier, "model.joblib")
-pickle.dump(random_forest_classifier,open('model.pkl','wb'))
+pickle.dump(random_forest_classifier,open('model.pklz','wb'))
 
 

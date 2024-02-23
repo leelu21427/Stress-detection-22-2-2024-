@@ -1,50 +1,24 @@
-'''import numpy as np
-from flask import Flask,request,jsonify,render_template
-import pickle
-import joblib
-#Create flask app
-app=Flask(__name__)
-
-#Load the pickle model
-model=pickle.load(open('model.pkl','rb'))
-#model = joblib.load("model.joblib")
-#route
-@app.route('/',methods=["GET","POST"])
-#Home page
-def Home():
-    return render_template("index.html")
-@app.route('/predicts',methods=["POST"])
-def predicts():
-    float_features=[float(x) for x in request.form.values()]
-    features=[np.array(float_features)]
-    #print(features)
-    prediction=model.predict(features)
-   
-    return render_template("index.html",prediction_text="Stress level is: {}".format(prediction))
-
-#main function
-if __name__=="__main__":
-    app.run(debug=True,port=5003)'''
 import numpy as np
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template,redirect,url_for,session,flash
 import pickle
+from datetime import timedelta
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import pandas as pd
-
+import joblib
+import codecs
 # Create Flask app
 app = Flask(__name__)
 
-# Load the pickled model
-model = pickle.load(open('model.pkl','rb'))
-
+model = pickle.load(open('model.pklz','rb'))
+#model=joblib.load('model.pkl')
 # Function to load the model
 def load_model():
     global model
-    model = pickle.load(open("model.pkl", "rb"))
+    model = pickle.load(open("model.pklz", "rb"))
 
 # Route for home page
-@app.route('/', methods=["GET", "POST"])
+@app.route('/')
 def home():
     return render_template("index.html")
 
@@ -52,11 +26,13 @@ def home():
 @app.route('/predict', methods=["POST"])
 def predict():
     # Ensure the model is loaded
+    
     if model is None:
         load_model()
     
     # Get the features from the form
-    float_features = [float(x) for x in request.form.values()]
+    float_features = [x for x in request.form.values()]
+    float_features.remove('')
     features = [np.array(float_features)]
     
     # Make prediction
@@ -73,8 +49,14 @@ def predict():
         a="Extreme Stress"
     
     # Return prediction to template
+    
+   
     return render_template("index.html", prediction_text="Stress level is: {}".format(a))
+    
+    #return "<html><body><h1>Stress level is:{}.format(a)</h1></body></html>"
+
 
 # Main function
-if __name__ == "__main__":
+if __name__ =="__main__":
     app.run(debug=True,port=5001)
+

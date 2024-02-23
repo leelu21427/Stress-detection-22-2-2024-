@@ -1,43 +1,101 @@
 <!DOCTYPE html>
 <html>
-<!--From https://codepen.io/frytyler/pen/EGdtg-->
 <head>
   <meta charset="UTF-8">
-  <title>ML API</title>
+  <title>Stress Prediction</title>
+  <link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
   <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-  
 </head>
 
 <body>
- <div class="login">
-	<h1>Stress Prediction</h1>
+  <div class="snow_wrap">
+    <div class="snow" style="color:white;"></div>
+  <div class="form-container">
+    <h1>Stress Prediction</h1>
+      <form action="{{ url_for('predict')}}" method="post" onsubmit="validateForm()"  class="predictionForm" >
+        <label>Snoring Rate</label>
+        <input type="text" name="Snoring Rate" id="snoringRate" placeholder="Snoring Rate" required="required" pattern="^(47(\.\d+)?|48(\.\d+)?|49(\.\d+)?|[0-9]\d(\.\d+)?|99(\.0)?)$" title="Please enter a number between 47 and 99 (including float values)."
+          onmouseover="displayValidRange('snoringRate', '47 to 99, including float values')"
+          onmouseout="hideValidRange('snoringRate')"/><br>
+        <div class="error-message" id="snoringRateError"></div>
+        <div class="valid-range" id="snoringRateRange"></div>
 
-     <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}" method="post">
-    	<input type="text" name="Snoring Rate" placeholder="Snoring Rate" required="required" /><br><br>
+        <label>Body Temperature</label>
+        <input type="text" name="Body Temperature" id="bodytemparature" placeholder="Body Temperature" required="required" pattern="^(85(\.\d+)?|86(\.\d+)?|87(\.\d+)?|[0-9]\d(\.\d+)?|99(\.0)?)$" title="Please enter a number between 85 and 99 (including float values)."
+          onmouseover="displayValidRange('bodyTemperature', '85 to 99, including float values')"
+          onmouseout="hideValidRange('bodyTemperature')"/><br>
+        <div class="error-message" id="bodyTemperatureError"></div>
+        <div class="valid-range" id="bodyTemperatureRange"></div>
+
+        <label>Blood Oxygen</label>
+        <input type="text" name="Blood Oxygen" id="bloodOxygen" placeholder="Blood Oxygen" required="required" pattern="^(82(\.\d+)?|83(\.\d+)?|84(\.\d+)?|[0-9]\d(\.\d+)?|97(\.0)?)$" title="Please enter a number between 82 and 97 (including float values)."
+          onmouseover="displayValidRange('bloodOxygen', '82 to 97, including float values')"
+          onmouseout="hideValidRange('bloodOxygen')"/><br>
+        <div class="error-message" id="bloodOxygenError"></div>
+        <div class="valid-range" id="bloodOxygenRange"></div>
+
+        <label>Respiration Rate</label>
+        <input type="text" name="Respiration Rate" id="respirationRate" placeholder="Respiration Rate" required="required" pattern="^(1[6-9](\.\d+)?|2[0-9](\.\d+)?|29(\.0)?)$" title="Please enter a number between 16 and 29 (including float values)."
+          onmouseover="displayValidRange('respirationRate', '16 to 29, including float values')"
+          onmouseout="hideValidRange('respirationRate')"/><br>
+        <div class="error-message" id="respirationRateError"></div>
+        <div class="valid-range" id="respirationRateRange"></div>
+
+       <label>Sleeping Hours</label>
+        <input type="text" name="Sleeping Hours" id="sleepingHours" placeholder="Sleeping Hours" required="required" pattern="^(?:[0-9](?:\.\d+)?|\.\d+)$"
+        title="Please enter a number between 0 and 9 (including float values)."
+          onmouseover="displayValidRange('sleepingHours', '0 to 9, including float values')"
+          onmouseout="hideValidRange('sleepingHours')"/><br>
+        <div class="error-message" id="sleepingHoursError"></div>
+        <div class="valid-range" id="sleepingHoursRange"></div>
+
+        <label>Heart Rate</label>
+        <input type="text" name="Heart Rate" id="heartRate" placeholder="Heart Rate" required="required" pattern="^(50(\.\d+)?|51(\.\d+)?|52(\.\d+)?|[0-9]\d(\.\d+)?|84(\.0)?)$" title="Please enter a number between 50 and 84 (including float values)."
+          onmouseover="displayValidRange('heartRate', '50 to 84, including float values')"
+          onmouseout="hideValidRange('heartRate')"/><br>
+        <div class="error-message" id="heartRateError"></div>
+        <div class="valid-range" id="heartRateRange"></div>
+
+        <label>Headache</label>
+        <input type="text" name="Headache" id="headAche" placeholder="Headache" required="required" pattern="^[01]$" title="Please enter 0(No) or 1(Yes)."
+          onmouseover="displayValidRange('headAche', 'Only 0 or 1')"
+          onmouseout="hideValidRange('headAche')"/><br>
+        <div class="error-message" id="headAcheError"></div>
+        <div class="valid-range" id="headAcheRange"></div>
+
+        <label>Working Hours</label>
+        <input type="text" name="Working Hours" id="workingHours" placeholder="Working Hours" required="required" pattern="^(?:[4-9]|1[0-2])$" title="Please enter the values between 4 and 15(without float values)"
+          onmouseover="displayValidRange('workingHours', '4 to 15 without float values')"
+          onmouseout="hideValidRange('workingHours')"/><br>
+        <div class="error-message" id="workingHoursError"></div>
+        <div class="valid-range" id="workingHoursRange"></div>
+
+        <button type="submit" name="button" target="index.html" onclick="">Check your Level</button>
         
-		<input type="text" name="Body Temperature" placeholder="Body Temperature" required="required" /><br><br>
-		
-		<input type="text" name="Blood Oxygen" placeholder="Blood Oxygen" required="required" /><br><br>
-    <input type="text" name="Respiration rate" placeholder="Respiration rate" required="required" /><br><br>
-        <!--<input type="text" name="Eye Movement" placeholder="Eye Movement" required="required" /><br><br>-->
-        <input type="text" name="Sleeping Hours" placeholder="Sleeping Hours" required="required" /><br><br>
-        <input type="text" name="Heart Rate" placeholder="Heart Rate" required="required" /><br><br>
-        <input type="text" name="HeadAche" placeholder="HeadAche" required="required" /><br><br>
-        <input type="text" name="Working Hours" placeholder="Working Hours" required="required" /><br><br>
         
-        <button type="submit" target="index.html" class="btn btn-primary btn-block btn-large">Check your Level</button>
-    </form>
+      </form><br><br>
+      <div id="predictionResult">
+        {{prediction_text}}
+        <p>Hey there! 👋 Need someone to talk to? I am Halene...</p>
+      </div>
+      <!--{% block content %}
+        {% with messages=get_flashed_messages() %}
+          {% if messages %}
+          <p>{{messages}}</p>
+          {% endif %}
+        {% endwith %}
+      {% endblock %}-->
+      
 
-   <br>
-   <br>
-   {{ prediction_text }}
-
- </div>
-
- <script src="//code.tidio.co/4yzyk7vfal8uvcpc9vceblbinc53efy7.js" async></script>
-</body>
-</html>
+    <!--^(0?[4-9]|1[0-5])$-->
+      
+  </div>
+  </div> 
+  <script type='text/javascript' src="{{ url_for('static',filename='script.js')}}"></script>
+  <script src="//code.tidio.co/4yzyk7vfal8uvcpc9vceblbinc53efy7.js"></script>
+  </body>
+  </html>
+      
